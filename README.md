@@ -257,7 +257,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] **Portfolio optimization** suggestions
 - [ ] **Risk management** indicators
 - [ ] **Backtesting framework**
-- [ ] **Model interpretability** (SHAP, LIME)
+
 
 ---
 
