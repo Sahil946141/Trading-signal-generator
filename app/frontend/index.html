@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Signal AI - Professional Market Prediction</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <i class="fas fa-chart-line"></i>
+        <span>Stock Signal AI</span>
+      </div>
+      <nav class="navbar-nav">
+        <a href="#" class="nav-link active">Dashboard</a>
+        <a href="#" class="nav-link">Analytics</a>
+        <a href="#" class="nav-link">Help</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>AI-Powered Stock Signal Prediction</h1>
+          <p>Advanced LSTM models with real-time market data analysis</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">5</span>
+            <span class="stat-label">Stocks Supported</span>
+          </div>
+          <div class="stat-item">
+            
+            <span class="stat-label">Accuracy Rate</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">Real-time</span>
+            <span class="stat-label">Processing</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Grid -->
+    <section class="main-grid">
+      <!-- Left Column - Input Panel -->
+      <div class="grid-left">
+        <!-- Stock Selection Card -->
+        <div class="card elevated">
+          <div class="card-header">
+            <h2><i class="fas fa-building"></i> Stock Selection</h2>
+            <div class="search-wrapper">
+              <input 
+                type="text" 
+                id="stockSearch" 
+                placeholder="Search stocks..." 
+                class="search-input"
+              >
+            </div>
+          </div>
+          <div class="card-body">
+            <label class="custom-select-label">
+              <span>Choose Your Stock</span>
+              <select id="predict-symbol" class="custom-select"></select>
+            </label>
+            <div class="stock-suggestions" id="stockSuggestions"></div>
+          </div>
+        </div>
+
+        <!-- Image Upload Card -->
+        <div class="card elevated">
+          <div class="card-header">
+            <h2><i class="fas fa-image"></i> Chart Image</h2>
+          </div>
+          <div class="card-body">
+            <div class="upload-area" id="uploadArea">
+              <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </div>
+              <p class="upload-title">Drag chart image here or click to select</p>
+              <p class="upload-subtitle">Supported: PNG, JPG, JPEG, GIF</p>
+              <input 
+                id="predict-file" 
+                type="file" 
+                accept=".png,.jpg,.jpeg,.gif" 
+                hidden
+              >
+            </div>
+            <div class="file-preview" id="filePreview"></div>
+          </div>
+        </div>
+
+        <!-- Prediction Button -->
+        <button class="btn btn-primary btn-large btn-full" id="predict-submit">
+          <i class="fas fa-magic"></i>
+          Run Prediction
+        </button>
+
+        <!-- Status Indicator -->
+        <div class="status-card">
+          <div class="status-indicator" id="predict-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Results Panel -->
+      <div class="grid-right">
+        <!-- Prediction Results Card -->
+        <div class="card elevated">
+          <div class="card-header">
+            <h2><i class="fas fa-brain"></i> Prediction Results</h2>
+            <div class="result-badge" id="resultBadge" style="display:none;"></div>
+          </div>
+          
+          <div class="card-body">
+            <div id="predict-result" class="result-placeholder">
+              <div class="placeholder-icon">
+                <i class="fas fa-chart-area"></i>
+              </div>
+              <p>Upload a chart image and run the prediction to see results</p>
+            </div>
+
+            <!-- Result Details (Hidden by default) -->
+            <div id="resultDetails" class="result-details" style="display:none;">
+              <div class="result-signal-box" id="signalBox"></div>
+              
+              <div class="result-metrics">
+                <div class="metric-item">
+                  <span class="metric-label">Signal</span>
+                  <span class="metric-value" id="resultSignal">-</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Confidence</span>
+                  <span class="metric-value" id="resultConfidence">-</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Pattern</span>
+                  <span class="metric-value" id="resultPattern">-</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Pattern Confidence</span>
+                  <span class="metric-value" id="resultPatternConfidence">-</span>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <!-- OHLC Data -->
+              <div class="ohlc-section">
+                <h3>Market Data (Latest Candle)</h3>
+                <div class="ohlc-grid" id="predict-ohlc"></div>
+              </div>
+
+              <!-- Additional Info -->
+              <div class="info-section">
+                <div class="info-item">
+                  <span class="info-label">Stock</span>
+                  <span class="info-value" id="infoStock">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Timeframe</span>
+                  <span class="info-value" id="infoTimeframe">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Latest Candle</span>
+                  <span class="info-value" id="infoCandle">-</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Model Type</span>
+                  <span class="info-value" id="infoModel">-</span>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <button class="btn btn-secondary" id="exportBtn">
+                  <i class="fas fa-download"></i> Export Report
+                </button>
+                <button class="btn btn-secondary" id="newPredictionBtn">
+                  <i class="fas fa-redo"></i> New Prediction
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- History Card -->
+        <div class="card elevated">
+          <div class="card-header">
+            <h2><i class="fas fa-history"></i> Recent Predictions</h2>
+          </div>
+          <div class="card-body">
+            <div id="historyList" class="history-list">
+              <p class="muted-text">No predictions yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Loading Spinner -->
+  <div class="loading-spinner" id="loadingSpinner" style="display:none;">
+    <div class="spinner"></div>
+    <p>Processing your prediction...</p>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
